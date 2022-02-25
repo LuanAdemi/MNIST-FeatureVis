@@ -1,0 +1,125 @@
+header {
+    background-color: #3A3D45;
+    color: white;
+    padding: 25px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 5px;
+} 
+.grid-image {
+    text-decoration: none;
+    color: black;
+    z-index: 0;
+    transition: transform .05s ease-in-out;
+}
+
+.grid-image img {
+    border-radius: 15%;
+}
+
+
+.grid-image:hover {
+    transform: scale(1.4);
+    z-index: 100;
+}
+
+figure {
+    margin: 0;
+}
+
+figcaption {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+img {
+    border: none;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.figure-div {
+    background-color: #F5F5F5;
+    grid-column: screen;
+    border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+    border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+    padding: 0;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.class-picker-figure {
+    grid-column: text;
+    margin-bottom: 20px;
+}
+
+.class-picker {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-gap: 5px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+
+}
+
+.picker-class {
+    max-height: auto;
+    text-decoration: none;
+    opacity: 60%;
+    border-radius: 10%;
+    cursor: pointer;
+}
+
+.picker-class img {
+    border-radius: 10%;
+}
+
+.picker-class:hover {
+    border: 3px solid sandybrown;
+}
+
+
+.active {
+    border: 3px solid sandybrown;
+    opacity: 100%;
+}
+
+.circuit {
+
+    margin-bottom: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+@media screen and (max-width: 800px) {
+    .image-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+    .graphic {
+        margin-left: 10vw;
+        margin-right: 10vw;
+    }
+    .interactive-icon {
+        visibility: hidden;
+    }
+    
+}
+
+.interactive-icon {
+    padding: 20px;
+    color: #3A3D45;;
+    font-size: 30px;
+}
+
+
+  .hero-div {
+    border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+  }
