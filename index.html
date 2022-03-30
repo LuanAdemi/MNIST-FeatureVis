@@ -68,19 +68,20 @@
         <d-cite bibtex-key="cammarata2020thread"></d-cite>
         ,
         which is a new way of looking at atomic structures in neural networks. We will use the methods developed by
-        this field to gain useful insights on how a classifier model trained on the MNIST dataset classifies
-        handwritten digits. It is also intended to act as a boilerplate for everyone trying to understand their
-        models.
+        this field to gain useful insights on how a classifier model classifies
+        handwritten digits.
     </p>
+    <p>It is also intended to act as a boilerplate for everyone trying to understand their
+        models or needing a head start in the field of circuit based interpretability.</p>
     <a class="marker" href="#section-2" id="section-2"><span>2</span></a>
     <h2>Classification</h2>
     <p>Let's begin by looking at the model and the task we are going to inspect in this article.</p>
-    <p>Our goal is to train a classifier for handwritten digits from the MNIST database. A classifier is a type of
-        neural network, that assigns its inputs class probabilities using some kind of learned distribution.</p>
+    <p>We are going to train ourself a</p>
+
     <a class="marker" href="#section-3" id="section-3"><span>3</span></a>
     <h2>Circuit based interpretability</h2>
     A circuit is a combination of primitive feature detectors, that enables a neural network to detect essential
-    features of it's input.
+    features of its input.
     <a class="marker" href="#section-3-1" id="section-3-1"><span>3.1</span></a>
     <h3>Feature Visualization
         <d-cite bibtex-key="olah2017feature"></d-cite>
@@ -165,59 +166,59 @@
             <b>Post-Softmax activation</b> can be used as an optimization objective to
         </p>
     </div>
-    <p>These objectives are the building blocks for complexe analysis of our models. We can perform joint optimizations
+    <p>These objectives are the building blocks for complex analyses of our models. We can perform joint optimizations
         by combining different objectives for the optimization step.</p>
 
     <d-code block language="python">
         activation = {} # dictionary to store the activation of a layer
 
         def create_hook(name):
-        def hook(m, i, o):
-        # copy the output of the given layer
-        activation[name] = o
+            def hook(m, i, o):
+                # copy the output of the given layer
+                activation[name] = o
 
-        return hook
+            return hook
 
-        model.fc2.register_forward_hook(create_hook("fc2"))
+            model.fc2.register_forward_hook(create_hook("fc2"))
     </d-code>
 
     <d-code block language="python">
         class Objective:
-        def __init__(self, model, layer):
-        self.activation = {}
-        self.model = model
+            def __init__(self, model, layer):
+                self.activation = {}
+                self.model = model
 
-        def add_forward_hook(self, layer, name):
-        def create_hook(name):
-        def hook(m, i, o):
-        # copy the output of the given layer
-        self.activation[name] = o.unsqueeze(0)
+            def add_forward_hook(self, layer, name):
+                def create_hook(name):
+                    def hook(m, i, o):
+                    # copy the output of the given layer
+                    self.activation[name] = o.unsqueeze(0)
 
-        return hook
+                return hook
 
-        self.model[layer].register_forward_hook(create_hook(name))
+                self.model[layer].register_forward_hook(create_hook(name))
 
-        def __call__(self, name):
-        return NotImplementedError
+            def __call__(self, name):
+                return NotImplementedError
 
     </d-code>
 
     <d-code block language="python">
         class neuron_objective(Objective):
-        def __call__(self, name, channel, neuron):
-        return -self.activation[name][channel, neuron].mean()
+            def __call__(self, name, channel, neuron):
+                return -self.activation[name][channel, neuron].mean()
 
     </d-code>
     <d-code block language="python">
         class channel_objective(Objective):
-        def __call__(self, name, channel):
-        return -self.activation[name][channel, :].mean()
+            def __call__(self, name, channel):
+                return -self.activation[name][channel, :].mean()
 
     </d-code>
     <d-code block language="python">
         class layer_objective(Objective):
-        def __call__(self, name):
-        return -self.activation[name][:, :].mean()
+            def __call__(self, name):
+                return -self.activation[name][:, :].mean()
 
     </d-code>
     <a class="marker" href="#section-3-2" id="section-3-2"><span>3.2</span></a>
