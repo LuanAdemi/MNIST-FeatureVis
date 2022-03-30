@@ -1,6 +1,7 @@
 <!doctype html>
 
 <head>
+    <title>Understanding MNIST-Classifier</title>
     <script src="scripts/template.v2.js"></script>
     <script src="scripts/script.js"></script>
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
@@ -10,8 +11,8 @@
 </head>
 
 <body>
-    <d-front-matter>
-        <script id='distill-front-matter' type="text/json">{
+<d-front-matter>
+    <script id='distill-front-matter' type="text/json">{
           "title": "Understanding MNIST-Classifiers",
           "description": "Using Feature Visualization to explore and understand the inner workings of a MNIST-Classifier.",
           "published": "February 22, 2022",
@@ -27,222 +28,243 @@
               {"left": "$$", "right": "$$", "display": false}
             ]
           }
-        }</script>
-    </d-front-matter>
-    <header><img src="assets//GitHub-Mark-Light-64px.png" style="width: 40px;"></header>
-    <d-title style="background-color:#3A3D45;color: white;"></d-title>
+        }
+    </script>
+</d-front-matter>
+<header><img src="assets/GitHub-Mark-Light-64px.png" style="width: 40px;" alt="GitHub"></header>
+<d-title style="background-color:#3A3D45;color: white;"></d-title>
 
-    <d-byline style="background-color: #F5F5F5;"></d-byline>
-    <div class="hero-div base-grid">
-        <figure class="hero" style="grid-column: middle;margin-top: 32px;">
-            <img src="assets/hero.png" alt="" draggable="false">
-            <figcaption>
-                Main detector circuits and their activation maps for
-                three primitive detectors of a mnist <d-cite bibtex-key="mnist"></d-cite> classifier for each class of
-                digit ranging from 0 to 9. See <a href="#section-3">section 3</a> for an indepth explanation.
-            </figcaption>
+<d-byline style="background-color: #F5F5F5;"></d-byline>
+<div class="hero-div base-grid">
+    <figure class="hero" style="grid-column: middle;margin-top: 32px;">
+        <img src="assets/hero.png" alt="" draggable="false">
+        <figcaption>
+            Main detector circuits and their activation maps for
+            three primitive detectors of a mnist
+            <d-cite bibtex-key="mnist"></d-cite>
+            classifier for each class of
+            digit ranging from 0 to 9. See <a href="#section-3">section 3</a> for an in-depth explanation.
+        </figcaption>
+    </figure>
+
+</div>
+<d-article>
+
+    <a class="marker" href="#section-1" id="section-1"><span>1</span></a>
+    <h2>Introduction</h2>
+    <p>In the recent years, a lot of research has been done in the field of interpretability,
+        providing us with powerful tools to help us to understand our models. Methods like GradCam
+        <d-cite
+                bibtex-key="gradcam"></d-cite>
+        enabled researchers to get a hint at what image models were looking for
+        to make their prediction.
+    </p>
+    <p>Understanding the inner workings of our models is not only a research interest, but also provides a baseline
+        for developing safe AI for a broader use and maybe even extract knowledge
+        <d-cite bibtex-key="elk"></d-cite>
+        .
+    </p>
+    <p>This article focuses on circuit based interpretability
+        <d-cite bibtex-key="cammarata2020thread"></d-cite>
+        ,
+        which is a new way of looking at atomic structures in neural networks. We will use the methods developed by
+        this field to gain useful insights on how a classifier model trained on the MNIST dataset classifies
+        handwritten digits. It is also intended to act as a boilerplate for everyone trying to understand their
+        models.
+    </p>
+    <a class="marker" href="#section-2" id="section-2"><span>2</span></a>
+    <h2>Classification</h2>
+    <p>Let's begin by looking at the model and the task we are going to inspect in this article.</p>
+    <p>Our goal is to train a classifier for handwritten digits from the MNIST database. A classifier is a type of
+        neural network, that assigns its inputs class probabilities using some kind of learned distribution.</p>
+    <a class="marker" href="#section-3" id="section-3"><span>3</span></a>
+    <h2>Circuit based interpretability</h2>
+    A circuit is a combination of primitive feature detectors, that enables a neural network to detect essential
+    features of it's input.
+    <a class="marker" href="#section-3-1" id="section-3-1"><span>3.1</span></a>
+    <h3>Feature Visualization
+        <d-cite bibtex-key="olah2017feature"></d-cite>
+    </h3>
+    <div class="graphic">
+        <figure class="image-grid">
+            <div class="grid-image">
+                <figure>
+                    <img src="assets/0.png" alt="" draggable="false">
+                </figure>
+            </div>
+            <div class="grid-image">
+                <figure><img src="assets/1.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image">
+                <figure><img src="assets/2.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image">
+                <figure><img src="assets/3.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image">
+                <figure><img src="assets/4.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image">
+                <figure><img src="assets/5.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image small-hidden">
+                <figure><img src="assets/6.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image small-hidden">
+                <figure><img src="assets/7.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image small-hidden">
+                <figure><img src="assets/8.png" alt="" draggable="false"></figure>
+            </div>
+            <div class="grid-image small-hidden">
+                <figure><img src="assets/9.png" alt="" draggable="false"></figure>
+            </div>
         </figure>
-
+        <figcaption>Feature Visualization of the last layer before a
+            softmax activation for each class. This shows us the combination of primitive detector circuits used by
+            the model to classify handwritten digits
+            <d-cite bibtex-key="mnist"></d-cite>
+            .
+            The detailed model specifications and a visualization for every channel can be found in the <a
+                    href="#appendix">appendix</a>.
+        </figcaption>
     </div>
-    <d-article>
 
-        <a class="marker" href="#section-1" id="section-1"><span>1</span></a>
-        <h2>Introduction</h2>
-        <p>In the recent years, a lot of research has been done in the field of interpretability,
-            providing us with powerful tools to help us to understand our models. Methods like GradCam <d-cite
-                bibtex-key="gradcam"></d-cite> enabled researchers to get a hint at what image models were looking for
-            to make their prediction.
+    <p>Using Feature Visualization, we are able to understand visually what certain part of our model strongly react
+        to. Through optimizing the activation of certain neurons, channels, regions or whole layers, we are able to
+        generate an input for our model, that shows us what excites the inspected part of our model the most.</p>
+    <aside>See <a href="https://distill.pub/2018/building-blocks/">this article</a> for some more complex activation
+        objectives and their use-cases. This section is more or less an overview of the distill series for circuits
+        <d-cite bibtex-key="cammarata2020thread"></d-cite>
+        .<br><br></aside>
+    <p>In general there are five main types of feature visualizations:</p>
+    <div class="feature-types">
+        <p>
+            <d-figure><img src="assets/neuron_activation.png" alt="" style="float: left;padding-bottom: 20px;"
+                           draggable="false"></d-figure>
+            <b>Neuron activation</b> can be used as an optimization objective to
         </p>
-        <p>Understanding the inner workings of our models is not only a research interest, but also provides a baseline
-            for developing safe AI for a broader use and maybe even extract knowledge <d-cite bibtex-key="elk"></d-cite>.
+        <p>
+            <d-figure><img src="assets/channel_activation.png" alt="" style="float: left;padding-bottom: 20px;"
+                           draggable="false"></d-figure>
+            <b>Channel activation</b> can be used as an optimization objective to
         </p>
-        <p>This article focuses on circuit based interpretability <d-cite bibtex-key="cammarata2020thread"></d-cite>,
-            which is a new way of looking at atomic structures in neural networks. We will use the methods developed by
-            this field to gain useful insights on how a classifier model trained on the MNIST dataset classifies
-            handwritten digits. It is also intended to act as a boilerplate for everyone trying to understand their
-            models.</p>
-        <a class="marker" href="#section-2" id="section-2"><span>2</span></a>
-        <h2>Classification</h2>
-        <p>Let's begin by looking at the model and the task we are going to inspect in this article.</p>
-        <p>Our goal is to train a classifier for handritten digits from the MNIST database. A classifier is a type of
-            neural network, that assigns it's inputs class probabilities using somekind of learned distribution.</p>
-        <a class="marker" href="#section-3" id="section-3"><span>3</span></a>
-        <h2>Circuit based interpretability</h2>
-        A circuit is a combination of primitive feature detectors, that enables a neural network to detect essential
-        features of it's input.
-        <a class="marker" href="#section-3-1" id="section-3-1"><span>3.1</span></a>
-        <h3>Feature Visualization <d-cite bibtex-key="olah2017feature"></d-cite></h3>
-        <div class="graphic">
-            <figure class="image-grid">
-                <div class="grid-image">
-                    <figure>
-                        <img src="assets/0.png" alt="" , draggable="false">
-                    </figure>
-                </div>
-                <div class="grid-image">
-                    <figure><img src="assets/1.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image">
-                    <figure><img src="assets/2.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image">
-                    <figure><img src="assets/3.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image">
-                    <figure><img src="assets/4.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image">
-                    <figure><img src="assets/5.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image small-hidden">
-                    <figure><img src="assets/6.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image small-hidden">
-                    <figure><img src="assets/7.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image small-hidden">
-                    <figure><img src="assets/8.png" alt="" , draggable="false"></figure>
-                </div>
-                <div class="grid-image small-hidden">
-                    <figure><img src="assets/9.png" alt="" , draggable="false"></figure>
-                </div>
-            </figure>
-            <figcaption>Feature Vizualisation of the last layer before a
-                softmax activation for each class. This shows us the combination of primitive detector circuits used by
-                the model to classify handwritten digits <d-cite bibtex-key="mnist"></d-cite>.
-                The detailed model specifications and a visualization for every channel can be found in the <a
-                    href="#appendix">appendix</a>.</figcaption>
-        </div>
-        
-        <p>Using Feature Visualization, we are able to understand visually what certian part of our model strongly react
-            to. Through optimizing the activation of certain neurons, channels, regions or whole leayers, we are able to
-            generate an input for our model, that shows us what excites the inspected part of our model the most.</p>
-            <aside>See <a href="https://distill.pub/2018/building-blocks/">this article</a> for some more complexe activation objectives and their usecases. This section is more or less an overview of the distill series for circuits <d-cite bibtex-key="cammarata2020thread"></d-cite>.<br><br></aside>
-        <p>In general there are five main types of feature visualizations:</p>
-        <div class="feature-types">
-            <p>
-                <d-figure><img src="assets/neuron_activation.png" alt="" style="float: left;padding-bottom: 20px;", draggable="false"></d-figure>
-                <b>Neuron activation</b> can be used as an optimization objective to 
-            </p>
-            <p>
-                <d-figure><img src="assets/channel_activation.png" alt="" style="float: left;padding-bottom: 20px;", draggable="false"></d-figure>
-                <b>Channel activation</b> can be used as an optimization objective to 
-            </p>
-            <p>
-                <d-figure><img src="assets/layer_activation.png" alt="" style="float: left;padding-bottom: 23px;", draggable="false"></d-figure>
-                <b>Layer activation</b> can be used as an optimization objective to 
-            </p>
-            <p>
-                <d-figure><img src="assets/pre-softmax-activation.png" alt="" style="float: left;padding-bottom: 28px;", draggable="false"></d-figure>
-                <b>Pre-Softmax activation</b> can be used as an optimization objective to 
-            </p>
-            <p>
-                <d-figure><img src="assets/post-softmax-activation.png" alt="" style="float: left;padding-bottom: 28px;", draggable="false"></d-figure>
-                <b>Post-Softmax activation</b> can be used as an optimization objective to 
-            </p>
-        </div>
-        <p>These objectives are the building blocks for complexe analysis of our models. We can perform joint optimizations by combining different objectives for the optimization step.</p>
-        
-        <d-code block language="python">
-            activation = {} # dictionary to store the activation of a layer
+        <p>
+            <d-figure><img src="assets/layer_activation.png" alt="" style="float: left;padding-bottom: 23px;"
+                           draggable="false"></d-figure>
+            <b>Layer activation</b> can be used as an optimization objective to
+        </p>
+        <p>
+            <d-figure><img src="assets/pre-softmax-activation.png" alt="" style="float: left;padding-bottom: 28px;"
+                           draggable="false"></d-figure>
+            <b>Pre-Softmax activation</b> can be used as an optimization objective to
+        </p>
+        <p>
+            <d-figure><img src="assets/post-softmax-activation.png" alt="" style="float: left;padding-bottom: 28px;"
+                           draggable="false"></d-figure>
+            <b>Post-Softmax activation</b> can be used as an optimization objective to
+        </p>
+    </div>
+    <p>These objectives are the building blocks for complexe analysis of our models. We can perform joint optimizations
+        by combining different objectives for the optimization step.</p>
 
-            def create_hook(name):
-                def hook(m, i, o):
-                # copy the output of the given layer
-                activation[name] = o
+    <d-code block language="python">
+        activation = {} # dictionary to store the activation of a layer
 
-            return hook
+        def create_hook(name):
+        def hook(m, i, o):
+        # copy the output of the given layer
+        activation[name] = o
 
-            model.fc2.register_forward_hook(create_hook("fc2")) 
-        </d-code>
+        return hook
 
-        <d-code block language="python">
-            class Objective:
-                def __init__(self, model, layer):
-                    self.activation = {}
-                    self.model = model
-                
-                def add_forward_hook(self, layer, name):
-                    def create_hook(name):
-                        def hook(m, i, o):
-                        # copy the output of the given layer
-                        self.activation[name] = o.unsqueeze(0)
+        model.fc2.register_forward_hook(create_hook("fc2"))
+    </d-code>
 
-                        return hook
+    <d-code block language="python">
+        class Objective:
+        def __init__(self, model, layer):
+        self.activation = {}
+        self.model = model
 
-                    self.model[layer].register_forward_hook(create_hook(name))
+        def add_forward_hook(self, layer, name):
+        def create_hook(name):
+        def hook(m, i, o):
+        # copy the output of the given layer
+        self.activation[name] = o.unsqueeze(0)
 
-                def __call__(self, name):
-                    return NotImplementedError
+        return hook
 
-        </d-code>
-        
-        <d-code block language="python">
-            class neuron_objective(Objective):
-                def __call__(self, name, channel, neuron):
-                    return -self.activation[name][channel, neuron].mean()
+        self.model[layer].register_forward_hook(create_hook(name))
 
-        </d-code>
-        <aside><d-figure><img src="assets/neuron_activation.png" alt="", draggable="false"></d-figure></aside>
-        <d-code block language="python">
-            class channel_objective(Objective):
-                def __call__(self, name, channel):
-                    return -self.activation[name][channel, :].mean()
+        def __call__(self, name):
+        return NotImplementedError
 
-        </d-code>
-        <aside><d-figure><img src="assets/channel_activation.png" alt="", draggable="false"></d-figure></aside>
-        <d-code block language="python">
-            class layer_objective(Objective):
-                def __call__(self, name):
-                    return -self.activation[name][:, :].mean()
+    </d-code>
 
-        </d-code>
-        <aside><d-figure><img src="assets/layer_activation.png" alt="", draggable="false"></d-figure></aside>
-        <a class="marker" href="#section-3-2" id="section-3-2"><span>3.2</span></a>
-        <h3>Circuits</h3>
-        <div class="figure-div base-grid">
+    <d-code block language="python">
+        class neuron_objective(Objective):
+        def __call__(self, name, channel, neuron):
+        return -self.activation[name][channel, neuron].mean()
 
-            <ion-icon name="hand" class="interactive-icon">
-            </ion-icon>
+    </d-code>
+    <d-code block language="python">
+        class channel_objective(Objective):
+        def __call__(self, name, channel):
+        return -self.activation[name][channel, :].mean()
+
+    </d-code>
+    <d-code block language="python">
+        class layer_objective(Objective):
+        def __call__(self, name):
+        return -self.activation[name][:, :].mean()
+
+    </d-code>
+    <a class="marker" href="#section-3-2" id="section-3-2"><span>3.2</span></a>
+    <h3>Circuits</h3>
+    <div class="figure-div base-grid">
+
+        <ion-icon name="hand" class="interactive-icon">
+        </ion-icon>
 
 
-            <figure class="class-picker-figure">
-                <div class="class-picker">
-                    <a id="picker-1" onclick="setActivePicker(1)" class="picker-class active"><img
-                            src="assets/samples/0_2.png" , draggable="false"></a>
-                    <a id="picker-2" onclick="setActivePicker(2)" class="picker-class"><img src="assets/samples/1_0.png"
-                            , draggable="false"></a>
-                    <a id="picker-3" onclick="setActivePicker(3)" class="picker-class"><img src="assets/samples/2_0.png"
-                            , draggable="false"></a>
-                    <a id="picker-4" onclick="setActivePicker(4)" class="picker-class"><img src="assets/samples/3_0.png"
-                            , draggable="false"></a>
-                    <a id="picker-5" onclick="setActivePicker(5)" class="picker-class"><img src="assets/samples/4_0.png"
-                            , draggable="false"></a>
-                    <a id="picker-6" onclick="setActivePicker(6)" class="picker-class"><img src="assets/samples/5_1.png"
-                            , draggable="false"></a>
-                    <a id="picker-7" onclick="setActivePicker(7)" class="picker-class"><img src="assets/samples/6_1.png"
-                            , draggable="false"></a>
-                    <a id="picker-8" onclick="setActivePicker(8)" class="picker-class"><img src="assets/samples/7_0.png"
-                            , draggable="false"></a>
-                    <a id="picker-9" onclick="setActivePicker(9)" class="picker-class"><img src="assets/samples/9_0.png"
-                            , draggable="false"></a>
-                    <a id="picker-10" onclick="setActivePicker(10)" class="picker-class"><img
-                            src="assets/samples/9_0.png" , draggable="false"></a>
-                </div>
-                <d-figure id="circuit" class="circuit">
-                    <img id="circuit-image" src="assets/circuits/Circuit0.png" alt="" draggable="false">
-                </d-figure>
-            </figure>
-        </div>
-    </d-article>
+        <figure class="class-picker-figure">
+            <div class="class-picker">
+                <a id="picker-1" onclick="setActivePicker(1)" class="picker-class active"><img
+                        src="assets/samples/0_2.png" draggable="false" alt=""></a>
+                <a id="picker-2" onclick="setActivePicker(2)" class="picker-class"><img src="assets/samples/1_0.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-3" onclick="setActivePicker(3)" class="picker-class"><img src="assets/samples/2_0.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-4" onclick="setActivePicker(4)" class="picker-class"><img src="assets/samples/3_0.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-5" onclick="setActivePicker(5)" class="picker-class"><img src="assets/samples/4_0.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-6" onclick="setActivePicker(6)" class="picker-class"><img src="assets/samples/5_1.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-7" onclick="setActivePicker(7)" class="picker-class"><img src="assets/samples/6_1.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-8" onclick="setActivePicker(8)" class="picker-class"><img src="assets/samples/7_0.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-9" onclick="setActivePicker(9)" class="picker-class"><img src="assets/samples/9_0.png"
+                                                                                        draggable="false" alt=""></a>
+                <a id="picker-10" onclick="setActivePicker(10)" class="picker-class"><img
+                        src="assets/samples/9_0.png" draggable="false" alt=""></a>
+            </div>
+            <d-figure id="circuit" class="circuit">
+                <img id="circuit-image" src="assets/circuits/Circuit0.png" alt="" draggable="false">
+            </d-figure>
+        </figure>
+    </div>
+</d-article>
 
-    <d-appendix>
+<d-appendix>
 
-        <h3>Reviewers</h3>
-        <p>Some text with links describing who reviewed the article.</p>
+    <h3>Reviewers</h3>
+    <p>Some text with links describing who reviewed the article.</p>
 
-        <d-bibliography>
-            <script type="text/bibtex">
+    <d-bibliography>
+        <script type="text/bibtex">
                 @article{olah2017feature,
                     author = {Olah, Chris and Mordvintsev, Alexander and Schubert, Ludwig},
                     title = {Feature Visualization},
@@ -292,9 +314,8 @@
                     year   = {2021},
                     url    = {https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/edit}
                 }
-            </script>
-        </d-bibliography>
-    </d-appendix>
 
-
+        </script>
+    </d-bibliography>
+</d-appendix>
 </body>
